@@ -18,91 +18,102 @@ class comparator{
     }
 };
 
-    ListNode* mergeKLists(vector<ListNode*>& lists) {
-        // using priority queue
-        priority_queue <ListNode*, vector<ListNode*>, comparator> pq;
-        int n = lists.size();
+    ListNode* mergeTwo(ListNode*L, ListNode* R){
+        if(L == NULL){
+            return R;
+        }else if(R == NULL){
+            return L;
+        }
+        ListNode* tail = NULL;
+        ListNode* head = NULL;
 
-
-        // push first element of all ll
-        for(int i = 0; i<n; i++){
-            ListNode* head = lists[i];
-            if(head != NULL){
-                pq.push(head);
-            }
+        if(L->val <= R-> val){
+            head = L;
+            tail = head;
+            L = L->next;
+        }else{
+            head = R;
+            tail = head;
+            R = R->next;
         }
 
-        ListNode* head = NULL;
-        ListNode* tail = NULL;
-
-        while(!pq.empty()){
-            ListNode* topele = pq.top();
-            pq.pop();
-
-            if(head == NULL){
-                head = topele;
-                tail = head;
-                if(tail->next != NULL){
-                    pq.push(tail->next);
-                }
+        while(L && R){
+            if(L-> val <= R->val){
+                tail -> next = L;
+                tail = tail->next;
+                L = L->next;
             }
             else{
-                tail->next = topele;
-                tail = topele;
-                if(tail->next != NULL){
-                    pq.push(tail->next);
-                }
+                tail->next = R;
+                tail = tail->next;
+                R = R->next;
             }
         }
 
+        if(L == NULL){
+            tail ->next = R;
+        }else{
+            tail ->next = L;
+        }
         return head;
     }
-};
 
-//usign 2 nd approch 
-class Solution {
-public:
-ListNode* mergetwolist(ListNode* list1,ListNode*list2){
-    if(list1==NULL){
-        return list2;
+    ListNode* partition(int s, int e, vector<ListNode*> &lists){
+        if(s>e){
+            return NULL;
+        }
+        if(s == e){
+            return lists[s];
+        }
+
+        int mid = s +(e-s)/2;
+        ListNode* L = partition(s, mid, lists);
+        ListNode* R = partition(mid+1, e, lists);
+
+        return mergeTwo(L, R);
     }
-    if(list2==NULL){
-        return list1;
-    }
 
-
-    if(list1->val<=list2->val){
-        list1->next=mergetwolist(list1->next,list2);
-        return list1;
-    }
-    else{
-        list2->next=mergetwolist(list1,list2->next);
-        return list2;
-
-    }
-}
-ListNode* partition(int s,int e,vector<ListNode*>& lists){
-    if(s>e){
-        return NULL;
-    }
-   if(s==e){
-    return lists[s];
-   }
-
-   int mid=s+(e-s)/2;
-
-   ListNode *L=partition(s,mid,lists);
-   ListNode *H=partition(mid+1,e,lists);
-
-    return mergetwolist(L,H);
-
-
-}
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        int start=0;
-        int n=lists.size();
-        int end=n-1;
+        // // using priority queue
+        // priority_queue <ListNode*, vector<ListNode*>, comparator> pq;
+        // int n = lists.size();
+        // // push first element of all ll
+        // for(int i = 0; i<n; i++){
+        //     ListNode* head = lists[i];
+        //     if(head != NULL){
+        //         pq.push(head);
+        //     }
+        // }
 
-        return partition(start,end,lists);
+        // ListNode* head = NULL;
+        // ListNode* tail = NULL;
+
+        // while(!pq.empty()){
+        //     ListNode* topele = pq.top();
+        //     pq.pop();
+
+        //     if(head == NULL){
+        //         head = topele;
+        //         tail = head;
+        //         if(tail->next != NULL){
+        //             pq.push(tail->next);
+        //         }
+        //     }
+        //     else{
+        //         tail->next = topele;
+        //         tail = topele;
+        //         if(tail->next != NULL){
+        //             pq.push(tail->next);
+        //         }
+        //     }
+        // }
+        // return head;
+
+        // // second approach 
+        int n = lists.size();
+        int s = 0;
+        int e = n-1;
+
+        return partition(s, e, lists);
     }
 };
