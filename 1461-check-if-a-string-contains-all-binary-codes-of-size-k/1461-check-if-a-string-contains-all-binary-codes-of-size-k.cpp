@@ -9,7 +9,7 @@ public:
             mp[a] = true;
         }
 
-        int num = pow(2, k);
+        int num = 1<<k;
         for(int i = 0; i<num; i++){
             if(!mp[i]){
                 return false; 
